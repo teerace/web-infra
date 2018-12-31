@@ -1,7 +1,7 @@
 version: "3.4"
 services:
-  # redis:
-  #   image: redis:5.0
+  redis:
+    image: redis:5.0
   django:
     image: ${web_image}
     command: uwsgi
@@ -13,6 +13,7 @@ services:
       labels:
         traefik.port: 8000
         traefik.docker.network: traefik-net
+        traefik.frontend.entryPoints: http,https
         traefik.frontend.rule: "Host: $${APPLICATION_DOMAIN}"
       restart_policy:
         condition: on-failure
@@ -20,12 +21,12 @@ services:
         max_attempts: 3
     networks:
       - traefik-net
-  # celery:
-  #   image: ${web_image}
-  #   command: celery
-  # celerybeat:
-  #   image: ${web_image}
-  #   command: beat
+  celery:
+    image: ${web_image}
+    command: celery
+  celerybeat:
+    image: ${web_image}
+    command: beat
   traefik:
     image: traefik:1.7
     command: |
